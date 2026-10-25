@@ -23,12 +23,18 @@ const CURSOR = `
     put();
   });`;
 
+// касание пальцем для записей «телефона»: круг, который сжимается при нажатии
+const TOUCH = CURSOR.replace(
+  `'<svg width="34" height="40" viewBox="0 0 27 32"><path d="M3 2 L3 26 L9.5 20 L14 30 L18 28 L13.5 18.5 L22 18.5 Z" fill="#111" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>'`,
+  `'<div style="width:44px;height:44px;border-radius:50%;background:rgba(20,20,20,.28);border:3px solid rgba(255,255,255,.9);box-shadow:0 2px 10px rgba(0,0,0,.3)"></div>'`,
+).replace("transformOrigin:'4px 3px'", "transformOrigin:'22px 22px',marginLeft:'-18px',marginTop:'-19px'");
+
 const names = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(CLIPS);
 const browser = await chromium.launch({ executablePath: process.env.CHROME });
 for (const name of names) {
   const [W, H] = CLIPS[name].vp ?? [W0, H0];
-  const ctx = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });
-  await ctx.addInitScript(CURSOR);
+  const ctx = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: CLIPS[name].dpr ?? 1 });
+  await ctx.addInitScript(CLIPS[name].touch ? TOUCH : CURSOR);
   const page = await ctx.newPage();
   await page.goto(`http://localhost:5195/${CLIPS[name].q ?? "?rec&lang=ru"}#/${CLIPS[name].view ?? ""}`);
   await page.waitForLoadState("networkidle");
@@ -44,7 +50,8 @@ for (const name of names) {
     frames.push({ f, t: metadata.timestamp });
     await cdp.send("Page.screencastFrameAck", { sessionId }).catch(() => {});
   });
-  await cdp.send("Page.startScreencast", { format: "jpeg", quality: 95, maxWidth: W, maxHeight: H, everyNthFrame: 1 });
+  const dpr = CLIPS[name].dpr ?? 1;
+  await cdp.send("Page.startScreencast", { format: "jpeg", quality: 95, maxWidth: W * dpr, maxHeight: H * dpr, everyNthFrame: 1 });
   await page.waitForTimeout(600);
   // тяжёлые сцены (стекло, морфинг) пишем в замедленном времени и потом ускоряем — так кадры идут ровно
   const slow = CLIPS[name].slow ?? 1;

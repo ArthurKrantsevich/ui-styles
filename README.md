@@ -2,7 +2,7 @@
 
 One screen in seven UI styles — skeuomorphism, Material 3, neumorphism, neo-brutalism, claymorphism, bento grid and Apple's Liquid Glass. For each style: how it's built in CSS, where it lives, pros and cons, and **its main flaw with a measured fix**.
 
-**▶ Live:** https://arthurkrantsevich.github.io/ui-styles/ · **Video (RU + EN audio):** VIDEO_URL
+**▶ Live:** https://arthurkrantsevich.github.io/ui-styles/ · **Video (RU + EN audio):** https://youtu.be/f7owPsUXKXk
 
 ![Morphing between styles](docs/morph.gif)
 
@@ -53,4 +53,4 @@ Vite + React 19 + TypeScript, no UI libraries. MIT.
 - **Все сразу** и **Как выбрать** — все семь рядом и матрица оценок с подсказкой, когда какой брать.
 - **RU / EN** — язык браузера по умолчанию, выбор запоминается.
 
-Видео с разбором (русская и английская дорожки): VIDEO_URL · канал [@NeuroP1lot](https://www.youtube.com/@NeuroP1lot)
+Видео с разбором (русская и английская дорожки): https://youtu.be/f7owPsUXKXk · канал [@NeuroP1lot](https://www.youtube.com/@NeuroP1lot)

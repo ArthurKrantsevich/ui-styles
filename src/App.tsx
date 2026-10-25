@@ -25,6 +25,8 @@ const useHash = () => {
   return h;
 };
 const REC = new URLSearchParams(location.search).has("rec");
+/** ?rec=m — запись для шортсов: экран телефона без панели */
+const REC_MODE = new URLSearchParams(location.search).get("rec") ?? "";
 /** 1,5:1 → 1.5:1 в английском */
 const num = (v: string, lang: Lang) => (lang === "en" ? v.replace(",", ".") : v);
 
@@ -39,7 +41,7 @@ export function App() {
   const [lang, setLang] = useLang();
   const { view, style: hashStyle } = useHash();
   return (
-    <div className="app" data-rec={REC ? "" : undefined}>
+    <div className="app" data-rec={REC ? REC_MODE : undefined}>
       {!REC && (
         <nav className="nav" aria-label="Menu">
           <span className="logo">

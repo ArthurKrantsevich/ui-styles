@@ -36,7 +36,41 @@ const fix = async (p) => {
 };
 
 const IDS = ["skeuo", "material", "neu", "brutal", "clay", "bento", "glass"];
+// вертикальные записи для шортсов: экран телефона, касания вместо курсора
+const jsClick = (p, sel) => p.evaluate((q) => document.querySelector(q).click(), sel);
+const M = { vp: [430, 932], dpr: 2, touch: true, q: "?rec=m&lang=ru" };
+const mPlay = (id, prev) => async (p) => {
+  await start(p); await jsClick(p, `#s-${prev}`); await wait(p, 1300);
+  await jsClick(p, `#s-${id}`); await wait(p, 1800);
+  await click(p, "#play", 450); await wait(p, 600);
+  await click(p, "#focus"); await wait(p, 800);
+  await click(p, "#focus"); await wait(p, 600);
+  await click(p, ".chip:nth-child(2)"); await wait(p, 600);
+  await click(p, "#cta", 500); await wait(p, 900);
+  await away(p); await wait(p, 1200);
+};
+const mFix = async (p) => {
+  await start(p); await wait(p, 1800);
+  await jsClick(p, "#fix"); await wait(p, 3200);
+  await click(p, "#cta", 450); await away(p); await wait(p, 1500);
+};
+const MSHORT = Object.fromEntries(IDS.flatMap((id, i) => [
+  [`m_${id}`, { ...M, view: `style/${id}`, slow: id === "glass" ? 4 : 1, run: mPlay(id, IDS[(i + 6) % 7]) }],
+  [`m_${id}_fix`, { ...M, view: `style/${id}`, slow: id === "glass" ? 4 : 1, run: mFix }],
+]));
+
 export const CLIPS = {
+  ...MSHORT,
+  m_material_shape: { ...M, view: "style/material", run: async (p) => {
+    await start(p); await jsClick(p, "#fix"); await wait(p, 1400);
+    for (let i = 0; i < 3; i++) { await click(p, "#play", 700); await wait(p, 900); }
+    await click(p, "#cta", 700); await wait(p, 900); await away(p); await wait(p, 600);
+  } },
+  m_glass_frost: { ...M, view: "style/glass", slow: 4, run: async (p) => {
+    await start(p); await wait(p, 1200);
+    await jsClick(p, "#liquid"); await wait(p, 2800);
+    await jsClick(p, "#liquid"); await wait(p, 3200);
+  } },
   intro: { view: "style/skeuo", vp: [1600, 900], slow: 4, run: async (p) => {
     await start(p); await wait(p, 900);
     for (const id of IDS.slice(1)) { await click(p, `#s-${id}`); await wait(p, 1250); }
